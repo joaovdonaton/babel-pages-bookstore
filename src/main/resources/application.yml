@@ -1,0 +1,10 @@
+spring:
+    application:
+        name: BabelPages
+
+    datasource:
+        url: jdbc:mysql://localhost:3306/babelpages_db
+        username: joao
+        password: ultrapassword
+        driver-class-name: com.mysql.cj.jdbc.Driver
+
