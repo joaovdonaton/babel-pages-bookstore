@@ -56,8 +56,9 @@ public class BabelPagesApplication {
         System.out.println("Inerting user into test table...");
         jdbcTemplate.update("INSERT INTO test (name) VALUES (?)", "Richard");
 
-        System.out.println("Retrieving values from test table...");
-        List<TestObject> res = jdbcTemplate.query("SELECT * FROM test", new TestObjectMapper());
+        // only gets the 3 most recent values to not clog up log
+        System.out.println("Retrieving 3 most recent values from test table...");
+        List<TestObject> res = jdbcTemplate.query("SELECT * FROM test ORDER BY id DESC LIMIT 3", new TestObjectMapper());
         res.forEach(System.out::println);
     }
 

@@ -8,3 +8,7 @@ spring:
         password: ultrapassword
         driver-class-name: com.mysql.cj.jdbc.Driver
 
+server:
+    servlet:
+       context-path: /babelpages/api/
+    port: 8080
