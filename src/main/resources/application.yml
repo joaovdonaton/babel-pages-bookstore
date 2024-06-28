@@ -8,6 +8,10 @@ spring:
         password: ultrapassword
         driver-class-name: com.mysql.cj.jdbc.Driver
 
+    flyway:
+        enabled: true
+        baseline-on-migrate: true
+
 server:
     servlet:
        context-path: /babelpages/api/

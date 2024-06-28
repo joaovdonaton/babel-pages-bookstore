@@ -16,7 +16,6 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-
 class TestObject{
     private int id;
     private String name;
