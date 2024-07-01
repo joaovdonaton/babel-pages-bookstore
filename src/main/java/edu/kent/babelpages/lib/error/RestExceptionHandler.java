@@ -1,5 +1,6 @@
 package edu.kent.babelpages.lib.error;
 
+import edu.kent.babelpages.lib.error.apiExceptions.ApiException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -23,10 +24,21 @@ public class RestExceptionHandler {
         ).toList();
 
         return new ResponseEntity<>(
-                new ApiErrorDTO(ex.getStatusCode().value(), "Validation failed!", "",
+                new ApiErrorDTO(ex.getStatusCode().value(), "Validation failed!",
                         extractedErrors,
                         Timestamp.valueOf(LocalDateTime.now()).toString(),
                         request.getContextPath()+request.getServletPath()),
                 BAD_REQUEST);
+    }
+
+    @ExceptionHandler({ApiException.class})
+    public ResponseEntity<ApiErrorDTO> handleApiExceptions(ApiException ex, HttpServletRequest request) {
+        return new ResponseEntity<>(new ApiErrorDTO(
+                ex.getStatus().value(),
+                ex.getMessage(),
+                List.of(),
+                Timestamp.valueOf(LocalDateTime.now()).toString(),
+                request.getContextPath()+request.getServletPath())
+        , ex.getStatus());
     }
 }

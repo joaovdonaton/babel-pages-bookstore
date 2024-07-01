@@ -1,9 +1,11 @@
 package edu.kent.babelpages.rest.users;
 
+import edu.kent.babelpages.lib.error.apiExceptions.InvalidCredentialsException;
 import edu.kent.babelpages.lib.security.JWTService;
 import edu.kent.babelpages.rest.users.DTO.UserCreationDTO;
 import edu.kent.babelpages.rest.users.DTO.UserCredentialsDTO;
 import edu.kent.babelpages.rest.users.DTO.UserInfoDTO;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -35,8 +37,13 @@ public class UsersService {
     public String login(UserCredentialsDTO userCredentialsDTO){
         User u = usersDAO.findByUsername(userCredentialsDTO.getUsername());
 
+        // We could return ResourceDoesNotExistException in case username is not found, but that would allow
+        // enumeration of usernames
+        if(u == null) throw new InvalidCredentialsException(HttpStatus.UNAUTHORIZED, "Invalid Credentials");
+
         if(!passwordEncoder.matches(userCredentialsDTO.getPassword(), u.getPasswordHash())){
-            return "Wrong password";
+            throw new InvalidCredentialsException(HttpStatus.UNAUTHORIZED,
+                    "Invalid Credentials");
         }
 
         return jwtService.createToken(new UserInfoDTO(

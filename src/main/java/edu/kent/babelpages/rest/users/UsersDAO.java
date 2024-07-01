@@ -1,5 +1,6 @@
 package edu.kent.babelpages.rest.users;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -19,6 +20,11 @@ public class UsersDAO {
     }
 
     public User findByUsername(String username){
-        return jdbcTemplate.queryForObject(SQL_SELECT_USER_BY_USERNAME, new UserRowMapper(), username);
+        try {
+            return jdbcTemplate.queryForObject(SQL_SELECT_USER_BY_USERNAME, new UserRowMapper(), username);
+        }
+        catch(EmptyResultDataAccessException e){
+            return null;
+        }
     }
 }

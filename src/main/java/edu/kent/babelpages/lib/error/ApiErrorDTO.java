@@ -10,7 +10,6 @@ import java.util.List;
 public class ApiErrorDTO {
     private int code;
     private String message;
-    private String details;
     private List<String> errors;
     private String timeStamp;
     private String path;
