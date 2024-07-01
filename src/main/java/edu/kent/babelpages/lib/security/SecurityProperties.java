@@ -13,4 +13,5 @@ public class SecurityProperties {
     private String jwtSecret;
     private String jwtIssuer;
     private String jwtExpiration;
+    private String jwtHeaderPrefix;
 }

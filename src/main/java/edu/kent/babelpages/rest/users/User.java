@@ -1,7 +1,6 @@
 package edu.kent.babelpages.rest.users;
 
 import edu.kent.babelpages.rest.users.DTO.UserCreationDTO;
-import edu.kent.babelpages.rest.users.DTO.UserInfoDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
