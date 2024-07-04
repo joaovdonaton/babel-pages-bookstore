@@ -8,3 +8,10 @@ INSERT INTO books (title, description, isbn, publication_date, language, price, 
                     "9780399178610", "2017-08-15", "English", 14.89, 45)
 
 ;
+
+INSERT INTO books_tags (book_id, tag_id) VALUES
+
+(),
+()
+
+;
