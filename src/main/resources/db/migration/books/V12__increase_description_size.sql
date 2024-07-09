@@ -1,0 +1,1 @@
+ALTER TABLE books MODIFY COLUMN description VARCHAR(1000)

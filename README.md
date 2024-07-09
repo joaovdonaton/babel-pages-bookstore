@@ -19,3 +19,8 @@ security.jwt-header-prefix=Bearer
 - There are additional development SQL scripts under ```src/main/resources/db/scripts```
   - SQL sripts that start with ```insert_dummy...(.sql)```should be executed after running the server once (so flyway can setup the tables)
     - These will populate tables with dummy data for testing
+
+## **Important**
+- MySQL enables `NO_ZERO_IN_DATE` by default. We want to disable that in our connection sessions to allow insertion
+of books with publication dates where month or days are optional (set to 00)
+  - This is done in the `application.yml` data source URL property.
