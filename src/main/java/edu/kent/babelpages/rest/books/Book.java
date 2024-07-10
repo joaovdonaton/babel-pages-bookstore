@@ -1,5 +1,6 @@
 package edu.kent.babelpages.rest.books;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,12 +11,14 @@ import java.util.UUID;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class Book {
     private UUID id;
     private String title;
     private String description;
     private String ISBN;
     private String language;
+    private String coverUrl;
     private BigDecimal price;
     private int stock_quantity;
     private Date publicationDate;
