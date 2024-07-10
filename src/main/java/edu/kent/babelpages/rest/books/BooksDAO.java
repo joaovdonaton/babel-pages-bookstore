@@ -1,25 +1,45 @@
 package edu.kent.babelpages.rest.books;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
 public class BooksDAO {
-    private final String SQL_SELECT_ORDER_BY =
-            "SELECT * FROM books ORDER BY ? LIMIT ? OFFSET ?";
-
-    private final JdbcTemplate jdbcTemplate;
-
-    public BooksDAO(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    private static String BUILD_QUERY_SELECT_SEARCH(String orderByColumn) {
+        return "SELECT * FROM books ORDER BY " + orderByColumn + " LIMIT ? OFFSET ?";
     }
 
-    public List<Book> findAllOrderBy(String orderBy, int limit, int page){
-        List<Book> result = jdbcTemplate.query(SQL_SELECT_ORDER_BY, new BookRowMapper(),
-                orderBy, limit, page);
+    private static String BUILD_QUERY_SELECT_SEARCH_WITH_KEYWORD(String orderByColumn) {
+        return "SELECT * FROM books " +
+                "WHERE title LIKE :keyword OR authors LIKE :keyword ORDER BY "
+                + orderByColumn + " LIMIT :limit OFFSET :offset";
+    }
 
-        return result;
+    private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+    public BooksDAO(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
+    }
+
+    public List<Book> findAllOrderBy(String orderBy, int limit, int offset){
+        return jdbcTemplate.query(BUILD_QUERY_SELECT_SEARCH(orderBy), new BookRowMapper(),
+                limit, offset);
+    }
+
+    public List<Book> findAllOrderByWithKeyword(String keyword, String orderBy, int limit, int offset){
+        String formattedKeyword = '%' + keyword.trim() + '%';
+
+        return namedParameterJdbcTemplate.query(BUILD_QUERY_SELECT_SEARCH_WITH_KEYWORD(orderBy),
+        new MapSqlParameterSource()
+                .addValue("keyword", formattedKeyword)
+                .addValue("limit", limit)
+                .addValue("offset", offset),
+        new BookRowMapper());
     }
 }

@@ -17,6 +17,11 @@ public class BooksService {
 
     public List<BookSearchResultDTO> search(String keyword, Integer limit, Integer page, AscDescEnum ascDesc,
                                             BookOrderByEnum bookOrderBy) {
-        return booksDAO.findAllOrderBy(bookOrderBy.toString(), limit, page).stream().map(BookSearchResultDTO::new).toList();
+        int offset = limit*page;
+
+        if(keyword == null)
+            return booksDAO.findAllOrderBy(bookOrderBy.toString(), limit, offset).stream().map(BookSearchResultDTO::new).toList();
+        else
+            return booksDAO.findAllOrderByWithKeyword(keyword, bookOrderBy.toString(), limit, offset).stream().map(BookSearchResultDTO::new).toList();
     }
 }

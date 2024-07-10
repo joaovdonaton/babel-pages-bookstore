@@ -3,6 +3,9 @@ package edu.kent.babelpages.rest.books;
 import edu.kent.babelpages.rest.books.DTO.BookSearchResultDTO;
 import edu.kent.babelpages.rest.books.enums.AscDescEnum;
 import edu.kent.babelpages.rest.books.enums.BookOrderByEnum;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.Min;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,9 +20,14 @@ public class BooksController {
     }
 
     @GetMapping
+    @Tag(name = "Books")
+    @Operation(
+            summary = "Search for books based on parameters",
+            description = "Returns a JSON array with fields specified in BookSearchResultDTO"
+    )
     public List<BookSearchResultDTO> getBooks(@RequestParam(required = false) String keyword,
-                                              @RequestParam(defaultValue = "10", required = false) int limit,
-                                              @RequestParam(defaultValue = "0", required = false) int page,
+                                              @RequestParam(defaultValue = "10", required = false) @Min(1) int limit,
+                                              @RequestParam(defaultValue = "0", required = false) @Min(0) int page,
                                               @RequestParam(defaultValue = "asc", required = false) AscDescEnum ascDesc,
                                               @RequestParam(defaultValue = "title", required = false) BookOrderByEnum orderBy) {
         return booksService.search(keyword, limit, page, ascDesc, orderBy);
