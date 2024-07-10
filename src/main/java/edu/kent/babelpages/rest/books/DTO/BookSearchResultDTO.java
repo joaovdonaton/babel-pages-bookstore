@@ -6,8 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -19,7 +17,9 @@ public class BookSearchResultDTO {
     private String title;
     private BigDecimal price;
     private String coverURL;
-    private Date publicationDate;
+    private int pubYear;
+    private int pubMonth;
+    private int pubDay;
     private Set<String> authors;
 
     public BookSearchResultDTO(Book book) {
@@ -27,7 +27,9 @@ public class BookSearchResultDTO {
         this.title = book.getTitle();
         this.price = book.getPrice();
         this.coverURL = book.getCoverUrl();
-        this.publicationDate = book.getPublicationDate();
+        this.pubYear = book.getPubYear();
+        this.pubMonth = book.getPubMonth();
+        this.pubDay = book.getPubDay();
         this.authors = book.getAuthors();
     }
 }

@@ -20,7 +20,9 @@ public class Book {
     private String language;
     private String coverUrl;
     private BigDecimal price;
-    private int stock_quantity;
-    private Date publicationDate;
+    private int stockQuantity;
+    private Integer pubYear;
+    private Integer pubMonth;
+    private Integer pubDay;
     private Set<String> authors;
 }

@@ -19,7 +19,9 @@ public class BookRowMapper implements RowMapper<Book> {
                 rs.getString("cover_url"),
                 rs.getBigDecimal("price"),
                 rs.getInt("stock_quantity"),
-                rs.getDate("publication_date"), // PROBLEM RIGHT NOW IS WE CAN'T CONVERT IF WE HAVE MONTH 00 OR DAY 00
+                rs.getInt("pub_year"),
+                rs.getInt("pub_month"),
+                rs.getInt("pub_day"),
                 // authors are in a comma separated VARCHAR column
                 new HashSet<>(Arrays.asList(rs.getString("authors").split(",")))
         );
