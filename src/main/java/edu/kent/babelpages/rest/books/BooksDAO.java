@@ -1,5 +1,6 @@
 package edu.kent.babelpages.rest.books;
 
+import edu.kent.babelpages.rest.tags.Tag;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -29,6 +30,7 @@ public class BooksDAO {
     private final String SQL_INSERT_BOOK = "INSERT INTO books " +
             "(id, title, description, isbn, language, price, stock_quantity, authors, cover_url, pub_year, pub_month, pub_day)" +
             " VALUES (?, ?, ?, ?, ?, ?, ? ,?, ?, ?, ?, ?)";
+    private final String SQL_INSERT_BOOK_TAG = "INSERT INTO books_tags (book_id, tag_id) VALUES (:book_id, :tag_id)";
 
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -85,5 +87,16 @@ public class BooksDAO {
                 );
 
         return findById(UUIDstr);
+    }
+
+    /**
+     * adds tag to book
+     * @param book needs id field
+     * @param tag needs id field
+     */
+    public void saveBookTag(Book book, Tag tag){
+        namedParameterJdbcTemplate.update(SQL_INSERT_BOOK_TAG, new MapSqlParameterSource()
+                .addValue("book_id", book.getId().toString())
+                .addValue("tag_id", tag.getId()));
     }
 }

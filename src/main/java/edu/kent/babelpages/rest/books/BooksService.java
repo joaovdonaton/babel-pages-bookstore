@@ -6,17 +6,24 @@ import edu.kent.babelpages.rest.books.DTO.BookRegisterDTO;
 import edu.kent.babelpages.rest.books.DTO.BookSearchResultDTO;
 import edu.kent.babelpages.rest.books.enums.AscDescEnum;
 import edu.kent.babelpages.rest.books.enums.BookOrderByEnum;
+import edu.kent.babelpages.rest.tags.Tag;
+import edu.kent.babelpages.rest.tags.TagsService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class BooksService {
     private final BooksDAO booksDAO;
+    private final TagsService tagsService;
 
-    public BooksService(BooksDAO booksDAO) {
+    public BooksService(BooksDAO booksDAO, TagsService tagsService) {
         this.booksDAO = booksDAO;
+        this.tagsService = tagsService;
     }
 
     public List<BookSearchResultDTO> search(String keyword, Integer limit, Integer page, AscDescEnum ascDesc,
@@ -37,7 +44,13 @@ public class BooksService {
         return new BookDetailsDTO(book);
     }
 
+    @Transactional
     public void addBook(BookRegisterDTO bookRegisterDTO){
-        booksDAO.save(new Book(bookRegisterDTO));
+        Book b = booksDAO.save(new Book(bookRegisterDTO));
+
+        // get tag objects because we need their ids
+        for (String tagName: bookRegisterDTO.getTags()){
+            booksDAO.saveBookTag(b, tagsService.getTagByName(tagName));
+        }
     }
 }

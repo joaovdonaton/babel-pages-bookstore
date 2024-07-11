@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.security.RolesAllowed;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -56,7 +57,7 @@ public class BooksController {
     @SecurityRequirement(name = "auth")
     @RolesAllowed("ADMIN")
     @ResponseStatus(HttpStatus.CREATED)
-    public void addBook(@RequestBody BookRegisterDTO bookRegisterDTO){
+    public void addBook(@Valid @RequestBody BookRegisterDTO bookRegisterDTO){
         booksService.addBook(bookRegisterDTO);
     }
 }

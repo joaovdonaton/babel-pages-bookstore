@@ -14,4 +14,8 @@ public class TagsService {
     public List<Tag> getAllTags(){
         return tagsDAO.findAll();
     }
+
+    public Tag getTagByName(String name){
+        return tagsDAO.findByName(name);
+    }
 }
