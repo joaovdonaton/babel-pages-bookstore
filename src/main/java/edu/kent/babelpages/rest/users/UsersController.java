@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +27,7 @@ public class UsersController {
     @Operation(
             summary = "Create a new user account"
     )
+    @ResponseStatus(HttpStatus.CREATED)
     public UserInfoDTO createUser(@RequestBody @Valid UserCreationDTO userCreationDTO) {
         return service.createUser(userCreationDTO);
     }

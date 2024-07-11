@@ -1,5 +1,6 @@
 package edu.kent.babelpages.rest.books;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -18,6 +19,8 @@ public class BooksDAO {
                 "WHERE title LIKE :keyword OR authors LIKE :keyword ORDER BY "
                 + orderByColumn + " LIMIT :limit OFFSET :offset";
     }
+
+    private final String SQL_SELECT_BY_ID = "SELECT * FROM books WHERE id = ?";
 
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -41,5 +44,14 @@ public class BooksDAO {
                 .addValue("limit", limit)
                 .addValue("offset", offset),
         new BookRowMapper());
+    }
+
+    public Book findById(String id){
+        try {
+            return jdbcTemplate.queryForObject(SQL_SELECT_BY_ID, new BookRowMapper(), id);
+        }
+        catch(EmptyResultDataAccessException e){
+            return null;
+        }
     }
 }

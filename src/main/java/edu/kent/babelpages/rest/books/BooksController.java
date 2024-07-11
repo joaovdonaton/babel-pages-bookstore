@@ -1,5 +1,6 @@
 package edu.kent.babelpages.rest.books;
 
+import edu.kent.babelpages.rest.books.DTO.BookDetailsDTO;
 import edu.kent.babelpages.rest.books.DTO.BookSearchResultDTO;
 import edu.kent.babelpages.rest.books.enums.AscDescEnum;
 import edu.kent.babelpages.rest.books.enums.BookOrderByEnum;
@@ -31,5 +32,14 @@ public class BooksController {
                                               @RequestParam(defaultValue = "asc", required = false) AscDescEnum ascDesc,
                                               @RequestParam(defaultValue = "title", required = false) BookOrderByEnum orderBy) {
         return booksService.search(keyword, limit, page, ascDesc, orderBy);
+    }
+
+    @GetMapping("/{id}")
+    @Tag(name = "Books")
+    @Operation(
+            summary = "Get full details of a book from id"
+    )
+    public BookDetailsDTO getBookDetails(@PathVariable String id){
+        return booksService.getDetailsFromUUID(id);
     }
 }
