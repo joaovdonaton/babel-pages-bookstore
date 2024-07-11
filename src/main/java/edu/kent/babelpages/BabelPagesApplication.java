@@ -1,5 +1,6 @@
 package edu.kent.babelpages;
 
+import edu.kent.babelpages.lib.security.SecurityProperties;
 import edu.kent.babelpages.rest.users.DTO.UserCredentialsDTO;
 import edu.kent.babelpages.rest.users.User;
 import edu.kent.babelpages.rest.users.UsersDAO;
@@ -14,11 +15,14 @@ public class BabelPagesApplication implements CommandLineRunner {
     private final UsersDAO usersDAO;
     private final UsersService usersService;
     private final PasswordEncoder passwordEncoder;
+    private final SecurityProperties securityProperties;
 
-    public BabelPagesApplication(UsersDAO usersDAO, UsersService usersService, PasswordEncoder passwordEncoder) {
+    public BabelPagesApplication(UsersDAO usersDAO, UsersService usersService, PasswordEncoder passwordEncoder,
+                                 SecurityProperties securityProperties) {
         this.usersDAO = usersDAO;
         this.usersService = usersService;
         this.passwordEncoder = passwordEncoder;
+        this.securityProperties = securityProperties;
     }
 
     public static void main(String[] args) {
@@ -27,18 +31,22 @@ public class BabelPagesApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // insert development admin user
-        if(usersDAO.findByUsername("administrator") == null) {
-            usersDAO.createUser(new User(null,
-                    "administrator",
-                    passwordEncoder.encode("10203040"),
-                    "John",
-                    "The Admin",
-                    null,
-                    "ADMIN"));
-        }
+        if(securityProperties.isDevMode()){
+            // insert development admin user
+            if(usersDAO.findByUsername(securityProperties.getDevAdminUsername()) == null) {
+                usersDAO.createUser(new User(null,
+                        securityProperties.getDevAdminUsername(),
+                        passwordEncoder.encode(securityProperties.getDevAdminPassword()),
+                        "John",
+                        "The Admin",
+                        null,
+                        "ADMIN"));
+            }
 
-        // put jwt token for admin in log for easier debugging and testing
-        System.out.println(usersService.login(new UserCredentialsDTO("administrator", "10203040")));
+            // put jwt token for admin in log for easier debugging and testing
+            System.out.println(usersService.login(
+                    new UserCredentialsDTO(
+                            securityProperties.getDevAdminUsername(), securityProperties.getDevAdminPassword())));
+        }
     }
 }

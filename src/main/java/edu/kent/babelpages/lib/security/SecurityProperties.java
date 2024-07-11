@@ -14,4 +14,7 @@ public class SecurityProperties {
     private String jwtIssuer;
     private String jwtExpiration;
     private String jwtHeaderPrefix;
+    private boolean devMode;
+    private String devAdminUsername;
+    private String devAdminPassword;
 }
