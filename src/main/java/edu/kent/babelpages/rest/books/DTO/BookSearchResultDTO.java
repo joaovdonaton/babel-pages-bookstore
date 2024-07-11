@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -30,6 +32,6 @@ public class BookSearchResultDTO {
         this.pubYear = book.getPubYear();
         this.pubMonth = book.getPubMonth();
         this.pubDay = book.getPubDay();
-        this.authors = book.getAuthors();
+        this.authors = new HashSet<>(Arrays.asList(book.getAuthors().split(",")));
     }
 }

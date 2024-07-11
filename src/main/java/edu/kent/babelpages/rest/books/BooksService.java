@@ -2,6 +2,7 @@ package edu.kent.babelpages.rest.books;
 
 import edu.kent.babelpages.lib.error.apiExceptions.ResourceDoesNotExistException;
 import edu.kent.babelpages.rest.books.DTO.BookDetailsDTO;
+import edu.kent.babelpages.rest.books.DTO.BookRegisterDTO;
 import edu.kent.babelpages.rest.books.DTO.BookSearchResultDTO;
 import edu.kent.babelpages.rest.books.enums.AscDescEnum;
 import edu.kent.babelpages.rest.books.enums.BookOrderByEnum;
@@ -9,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class BooksService {
@@ -35,5 +35,9 @@ public class BooksService {
         if(book == null) throw new ResourceDoesNotExistException(HttpStatus.NOT_FOUND, "User with uuid " + id + " does not exist");
 
         return new BookDetailsDTO(book);
+    }
+
+    public void addBook(BookRegisterDTO bookRegisterDTO){
+        booksDAO.save(new Book(bookRegisterDTO));
     }
 }

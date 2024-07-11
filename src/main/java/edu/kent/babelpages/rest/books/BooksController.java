@@ -1,12 +1,16 @@
 package edu.kent.babelpages.rest.books;
 
 import edu.kent.babelpages.rest.books.DTO.BookDetailsDTO;
+import edu.kent.babelpages.rest.books.DTO.BookRegisterDTO;
 import edu.kent.babelpages.rest.books.DTO.BookSearchResultDTO;
 import edu.kent.babelpages.rest.books.enums.AscDescEnum;
 import edu.kent.babelpages.rest.books.enums.BookOrderByEnum;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.constraints.Min;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -41,5 +45,18 @@ public class BooksController {
     )
     public BookDetailsDTO getBookDetails(@PathVariable String id){
         return booksService.getDetailsFromUUID(id);
+    }
+
+    @PostMapping("/")
+    @Tag(name = "Books")
+    @Operation(
+            summary = "Add new book.",
+            description = "Check BookRegisterDTO for non-nullable fields"
+    )
+    @SecurityRequirement(name = "auth")
+    @RolesAllowed("ADMIN")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void addBook(@RequestBody BookRegisterDTO bookRegisterDTO){
+        booksService.addBook(bookRegisterDTO);
     }
 }

@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -34,7 +36,7 @@ public class BookDetailsDTO {
         this.pubYear = book.getPubYear();
         this.pubMonth = book.getPubMonth();
         this.pubDay = book.getPubDay();
-        this.authors = book.getAuthors();
+        this.authors = new HashSet<>(Arrays.asList(book.getAuthors().split(",")));
         this.ISBN = book.getISBN();
         this.language = book.getLanguage();
         this.isLowStock = book.getStockQuantity() <= 10;
