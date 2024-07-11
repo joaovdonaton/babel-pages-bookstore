@@ -1,7 +1,9 @@
 package edu.kent.babelpages;
 
+import edu.kent.babelpages.rest.users.DTO.UserCredentialsDTO;
 import edu.kent.babelpages.rest.users.User;
 import edu.kent.babelpages.rest.users.UsersDAO;
+import edu.kent.babelpages.rest.users.UsersService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -10,10 +12,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @SpringBootApplication
 public class BabelPagesApplication implements CommandLineRunner {
     private final UsersDAO usersDAO;
+    private final UsersService usersService;
     private final PasswordEncoder passwordEncoder;
 
-    public BabelPagesApplication(UsersDAO usersDAO, PasswordEncoder passwordEncoder) {
+    public BabelPagesApplication(UsersDAO usersDAO, UsersService usersService, PasswordEncoder passwordEncoder) {
         this.usersDAO = usersDAO;
+        this.usersService = usersService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -33,5 +37,8 @@ public class BabelPagesApplication implements CommandLineRunner {
                     null,
                     "ADMIN"));
         }
+
+        // put jwt token for admin in log for easier debugging and testing
+        System.out.println(usersService.login(new UserCredentialsDTO("administrator", "10203040")));
     }
 }

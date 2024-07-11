@@ -6,15 +6,12 @@ import edu.kent.babelpages.rest.books.DTO.BookRegisterDTO;
 import edu.kent.babelpages.rest.books.DTO.BookSearchResultDTO;
 import edu.kent.babelpages.rest.books.enums.AscDescEnum;
 import edu.kent.babelpages.rest.books.enums.BookOrderByEnum;
-import edu.kent.babelpages.rest.tags.Tag;
 import edu.kent.babelpages.rest.tags.TagsService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class BooksService {
@@ -52,5 +49,9 @@ public class BooksService {
         for (String tagName: bookRegisterDTO.getTags()){
             booksDAO.saveBookTag(b, tagsService.getTagByName(tagName));
         }
+    }
+
+    public void deleteBook(String id){
+        booksDAO.deleteBookById(id);
     }
 }

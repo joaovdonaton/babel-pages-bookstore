@@ -1,7 +1,9 @@
 package edu.kent.babelpages.rest.books;
 
+import edu.kent.babelpages.lib.error.apiExceptions.ResourceDoesNotExistException;
 import edu.kent.babelpages.rest.tags.Tag;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -31,6 +33,7 @@ public class BooksDAO {
             "(id, title, description, isbn, language, price, stock_quantity, authors, cover_url, pub_year, pub_month, pub_day)" +
             " VALUES (?, ?, ?, ?, ?, ?, ? ,?, ?, ?, ?, ?)";
     private final String SQL_INSERT_BOOK_TAG = "INSERT INTO books_tags (book_id, tag_id) VALUES (:book_id, :tag_id)";
+    private final String SQL_DELETE_BY_ID = "DELETE FROM books WHERE id = ?";
 
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -98,5 +101,12 @@ public class BooksDAO {
         namedParameterJdbcTemplate.update(SQL_INSERT_BOOK_TAG, new MapSqlParameterSource()
                 .addValue("book_id", book.getId().toString())
                 .addValue("tag_id", tag.getId()));
+    }
+
+    public void deleteBookById(String id){
+        int n = jdbcTemplate.update(SQL_DELETE_BY_ID, id);
+        if(n == 0){ // i.e delete failed
+            throw new ResourceDoesNotExistException(HttpStatus.NOT_FOUND, "Book with id " + id + " does not exist.");
+        }
     }
 }

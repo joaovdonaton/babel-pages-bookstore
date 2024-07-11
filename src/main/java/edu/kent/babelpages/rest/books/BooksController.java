@@ -60,4 +60,14 @@ public class BooksController {
     public void addBook(@Valid @RequestBody BookRegisterDTO bookRegisterDTO){
         booksService.addBook(bookRegisterDTO);
     }
+
+    @DeleteMapping("/{id}")
+    @Tag(name = "Books")
+    @Operation(
+            summary = "Delete book by id."
+    )
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteBook(@PathVariable String id){
+        booksService.deleteBook(id);
+    }
 }
