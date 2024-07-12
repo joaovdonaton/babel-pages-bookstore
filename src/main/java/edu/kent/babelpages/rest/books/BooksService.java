@@ -38,7 +38,7 @@ public class BooksService {
 
         if(book == null) throw new ResourceDoesNotExistException(HttpStatus.NOT_FOUND, "User with uuid " + id + " does not exist");
 
-        return new BookDetailsDTO(book);
+        return new BookDetailsDTO(book, tagsService.getTagsByBookId(id));
     }
 
     @Transactional

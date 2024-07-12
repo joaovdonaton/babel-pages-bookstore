@@ -15,6 +15,8 @@ public class TagSetValidator implements ConstraintValidator<TagSetConstraint, Se
 
     @Override
     public boolean isValid(Set<String> tagNames, ConstraintValidatorContext constraintValidatorContext) {
+        if(tagNames == null || tagNames.isEmpty()) return true; // we accept null tags
+
         var validTags = tagsService.getAllTags();
 
         for(String name : tagNames) {

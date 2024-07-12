@@ -1,6 +1,8 @@
 package edu.kent.babelpages.rest.books.DTO;
 
 import edu.kent.babelpages.rest.books.Book;
+import edu.kent.babelpages.rest.tags.DTO.TagResultDTO;
+import edu.kent.babelpages.rest.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,6 +12,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -27,8 +30,9 @@ public class BookDetailsDTO {
     private int pubDay;
     private Set<String> authors;
     private boolean isLowStock;
+    private Set<TagResultDTO> tags;
 
-    public BookDetailsDTO(Book book) {
+    public BookDetailsDTO(Book book, Set<Tag> tags) {
         this.id = book.getId();
         this.title = book.getTitle();
         this.price = book.getPrice();
@@ -40,5 +44,7 @@ public class BookDetailsDTO {
         this.ISBN = book.getISBN();
         this.language = book.getLanguage();
         this.isLowStock = book.getStockQuantity() <= 10;
+
+        this.tags = tags.stream().map(TagResultDTO::new).collect(Collectors.toSet());
     }
 }
