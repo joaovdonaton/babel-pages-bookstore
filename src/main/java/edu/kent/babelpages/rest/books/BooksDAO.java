@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -18,14 +19,41 @@ import java.util.UUID;
  */
 @Repository
 public class BooksDAO {
-    private static String BUILD_QUERY_SELECT_SEARCH(String orderByColumn) {
-        return "SELECT * FROM books ORDER BY " + orderByColumn + " LIMIT ? OFFSET ?";
-    }
+    private static String BUILD_QUERY_SELECT_SEARCH(String orderByColumn, String ascDesc, String keyword, Set<String> tagNames) {
+        StringBuilder sql = new StringBuilder(
+                // we only select columns from books here since we are only interested in that for now
+                "SELECT books.* FROM books_tags JOIN tags ON tags.id = books_tags.tag_id JOIN books ON books.id = books_tags.book_id "
+        );
 
-    private static String BUILD_QUERY_SELECT_SEARCH_WITH_KEYWORD(String orderByColumn) {
-        return "SELECT * FROM books " +
-                "WHERE title LIKE :keyword OR authors LIKE :keyword ORDER BY "
-                + orderByColumn + " LIMIT :limit OFFSET :offset";
+        // logic to build WHERE clause
+        if(keyword != null || tagNames != null) sql.append(" WHERE ");
+
+        if(keyword != null){
+            sql.append(" ( title LIKE :keyword OR authors LIKE :keyword )");
+        }
+
+        if(tagNames != null){
+            if(keyword != null) sql.append(" AND ");
+
+            sql.append("( ");
+            for(int i = 0; i < tagNames.size(); i++){
+                if(i != 0) sql.append(" OR ");
+                sql.append(" tags.name = :tagName").append(i);
+            }
+            sql.append(" )");
+        }
+
+        // we have to group by book id otherwise we have repeated books because of the join with books_tags
+        sql.append(" GROUP BY books.id");
+
+        if(orderByColumn != null){
+            sql.append(" ORDER BY ").append(orderByColumn);
+            sql.append(" ").append(ascDesc);
+        }
+
+        sql.append(" LIMIT :limit OFFSET :offset");
+
+        return sql.toString();
     }
 
     private final String SQL_SELECT_BY_ID = "SELECT * FROM books WHERE id = ?";
@@ -43,20 +71,26 @@ public class BooksDAO {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
-    public List<Book> findAllOrderBy(String orderBy, int limit, int offset){
-        return jdbcTemplate.query(BUILD_QUERY_SELECT_SEARCH(orderBy), new BookRowMapper(),
-                limit, offset);
-    }
+    public List<Book> findAllOrderBy(String orderBy, String ascDesc, String keyword, Set<String> tagNames, int limit, int offset){
+        // add wildcards to keyword for better search
+        if(keyword != null) keyword = '%' + keyword.trim() + '%';
 
-    public List<Book> findAllOrderByWithKeyword(String keyword, String orderBy, int limit, int offset){
-        String formattedKeyword = '%' + keyword.trim() + '%';
-
-        return namedParameterJdbcTemplate.query(BUILD_QUERY_SELECT_SEARCH_WITH_KEYWORD(orderBy),
-        new MapSqlParameterSource()
-                .addValue("keyword", formattedKeyword)
+        var parameters = new MapSqlParameterSource()
+                .addValue("keyword", keyword)
                 .addValue("limit", limit)
-                .addValue("offset", offset),
-        new BookRowMapper());
+                .addValue("offset", offset);
+
+        // add tags to parameter, should be named tagNameN where N is index starting at 0 for each tag
+        if(tagNames != null) {
+            var tagNamesList = tagNames.stream().toList();
+            for (int i = 0; i < tagNamesList.size(); i++) {
+                parameters.addValue("tagName" + i, tagNamesList.get(i));
+            }
+        }
+
+        return namedParameterJdbcTemplate.query(BUILD_QUERY_SELECT_SEARCH(orderBy, ascDesc, keyword, tagNames),
+                parameters,
+                new BookRowMapper());
     }
 
     public Book findById(String id){

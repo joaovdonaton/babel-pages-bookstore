@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class BooksService {
@@ -24,13 +25,10 @@ public class BooksService {
     }
 
     public List<BookSearchResultDTO> search(String keyword, Integer limit, Integer page, AscDescEnum ascDesc,
-                                            BookOrderByEnum bookOrderBy) {
+                                            BookOrderByEnum bookOrderBy, Set<String> tagNames) {
         int offset = limit*page;
 
-        if(keyword == null)
-            return booksDAO.findAllOrderBy(bookOrderBy.toString(), limit, offset).stream().map(BookSearchResultDTO::new).toList();
-        else
-            return booksDAO.findAllOrderByWithKeyword(keyword, bookOrderBy.toString(), limit, offset).stream().map(BookSearchResultDTO::new).toList();
+        return booksDAO.findAllOrderBy(bookOrderBy.toString(), ascDesc.toString(), keyword, tagNames, limit, offset).stream().map(BookSearchResultDTO::new).toList();
     }
 
     public BookDetailsDTO getDetailsFromUUID(String id){

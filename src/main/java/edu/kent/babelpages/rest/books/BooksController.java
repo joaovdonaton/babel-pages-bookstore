@@ -38,9 +38,9 @@ public class BooksController {
                                               @RequestParam(defaultValue = "10", required = false) @Min(1) int limit,
                                               @RequestParam(defaultValue = "0", required = false) @Min(0) int page,
                                               @RequestParam(defaultValue = "asc", required = false) AscDescEnum ascDesc,
-                                              @RequestParam(defaultValue = "title", required = false) BookOrderByEnum orderBy,
+                                              @RequestParam(defaultValue = "title") BookOrderByEnum orderBy,
                                               @RequestParam(required = false) @Valid @TagSetConstraint Set<String> tags) {
-        return booksService.search(keyword, limit, page, ascDesc, orderBy);
+        return booksService.search(keyword, limit, page, ascDesc, orderBy, tags);
     }
 
     @GetMapping("/{id}")
