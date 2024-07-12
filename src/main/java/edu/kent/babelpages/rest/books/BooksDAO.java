@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import static edu.kent.babelpages.rest.books.enums.BookOrderByEnum.PUBLICATION_DATE;
+
 /**
  * Important note on how Books are stored:
  * We use a comma separated string for multiple authors
@@ -47,8 +49,16 @@ public class BooksDAO {
         sql.append(" GROUP BY books.id");
 
         if(orderByColumn != null){
-            sql.append(" ORDER BY ").append(orderByColumn);
-            sql.append(" ").append(ascDesc);
+            sql.append(" ORDER BY ");
+            if(!orderByColumn.equals(PUBLICATION_DATE.toString())) sql.append(orderByColumn);
+            /*
+            We need a special case for publication_date order by, since we stored year, month and day in different columns
+             */
+            else{
+                sql.append("pub_year ").append(ascDesc).append(", ");
+                sql.append("pub_month ").append(ascDesc).append(", ");
+                sql.append("pub_day ").append(ascDesc);
+            }
         }
 
         sql.append(" LIMIT :limit OFFSET :offset");
