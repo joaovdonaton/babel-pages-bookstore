@@ -5,6 +5,7 @@ import edu.kent.babelpages.rest.books.DTO.BookRegisterDTO;
 import edu.kent.babelpages.rest.books.DTO.BookSearchResultDTO;
 import edu.kent.babelpages.rest.books.enums.AscDescEnum;
 import edu.kent.babelpages.rest.books.enums.BookOrderByEnum;
+import edu.kent.babelpages.rest.books.validators.TagSetConstraint;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -12,9 +13,11 @@ import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/books")
@@ -35,7 +38,8 @@ public class BooksController {
                                               @RequestParam(defaultValue = "10", required = false) @Min(1) int limit,
                                               @RequestParam(defaultValue = "0", required = false) @Min(0) int page,
                                               @RequestParam(defaultValue = "asc", required = false) AscDescEnum ascDesc,
-                                              @RequestParam(defaultValue = "title", required = false) BookOrderByEnum orderBy) {
+                                              @RequestParam(defaultValue = "title", required = false) BookOrderByEnum orderBy,
+                                              @RequestParam(required = false) @Valid @TagSetConstraint Set<String> tags) {
         return booksService.search(keyword, limit, page, ascDesc, orderBy);
     }
 

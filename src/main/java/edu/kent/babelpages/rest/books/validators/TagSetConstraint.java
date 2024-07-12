@@ -7,7 +7,7 @@ import java.lang.annotation.*;
 
 @Documented
 @Constraint(validatedBy = TagSetValidator.class)
-@Target( { ElementType.FIELD })
+@Target( { ElementType.FIELD , ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface TagSetConstraint {
     String message() default "One or more tags are invalid.";
