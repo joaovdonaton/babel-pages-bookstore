@@ -53,7 +53,7 @@ public class JWTService {
                 .signWith(Keys.hmacShaKeyFor(securityProperties.getJwtSecret().getBytes()))
                 .serializeToJsonWith(new JacksonSerializer<>())
                 .setIssuedAt(toDate(LocalDate.now()))
-                .setExpiration(toDate(LocalDate.now().plusDays(1)))
+                .setExpiration(toDate(LocalDate.now().plusDays(7)))
                 .setIssuer(securityProperties.getJwtIssuer())
                 .setSubject(userInfoDTO.getId().toString())
                 .addClaims(Map.of("user", userInfoDTO))

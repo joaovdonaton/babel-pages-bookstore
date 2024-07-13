@@ -2,6 +2,7 @@ spring:
     application:
         name: BabelPages
 
+
     datasource:
         url: jdbc:mysql://localhost:3306/babelpages_db?sessionVariables=sql_mode='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION'
         username: joao

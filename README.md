@@ -34,3 +34,5 @@ data on actual books from ISBNs
 - It also uses OpenAI's GPT API to generate description and properly tag books by genre and descriptors
 
 ## **Important**
+- Changing column names has a *HIGH* chance of breaking the queries in the DAOs
+  - Doing so would probably require refactors and attention
