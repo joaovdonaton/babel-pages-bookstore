@@ -16,8 +16,5 @@ public class Review {
     private String title;
     private String body;
     private int score;
-    private Integer usefulVotes;
-    private Integer funnyVotes;
-    private Integer poeticVotes;
     private Timestamp createdAt;
 }

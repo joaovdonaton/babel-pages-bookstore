@@ -1,5 +1,6 @@
 package edu.kent.babelpages.rest.reviewVotes;
 
+import edu.kent.babelpages.rest.reviewVotes.DTO.VoteCountDTO;
 import edu.kent.babelpages.rest.reviewVotes.enums.VoteType;
 import org.springframework.stereotype.Service;
 
@@ -13,5 +14,9 @@ public class ReviewVotesService {
 
     public void addVoteToReview(String reviewId, String userId, VoteType voteType){
         reviewVotesDAO.save(new ReviewVote(reviewId, userId, voteType.toString()));
+    }
+
+    public VoteCountDTO countVotesForReview(String reviewId){
+        return reviewVotesDAO.countVotesByReviewId(reviewId);
     }
 }

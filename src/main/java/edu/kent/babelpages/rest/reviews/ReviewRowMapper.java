@@ -15,9 +15,6 @@ public class ReviewRowMapper implements RowMapper<Review> {
                 rs.getString("title"),
                 rs.getString("body"),
                 rs.getInt("score"),
-                rs.getInt("useful_votes"),
-                rs.getInt("funny_votes"),
-                rs.getInt("poetic_votes"),
                 rs.getTimestamp("created_at")
         );
     }

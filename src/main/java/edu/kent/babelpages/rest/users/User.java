@@ -1,5 +1,6 @@
 package edu.kent.babelpages.rest.users;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import edu.kent.babelpages.rest.users.DTO.UserCreationDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,6 +17,7 @@ import java.util.UUID;
 public class User {
     private UUID id;
     private String username;
+    @JsonIgnore
     private String passwordHash;
     private String firstName;
     private String lastName;
