@@ -1,0 +1,1 @@
+ALTER TABLE review_votes ADD CONSTRAINT no_repeated_votes UNIQUE(review_id, user_id, type);

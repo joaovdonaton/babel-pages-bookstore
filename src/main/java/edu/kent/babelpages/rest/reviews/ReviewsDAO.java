@@ -34,5 +34,4 @@ public class ReviewsDAO {
 
         return findById(uuidString);
     }
-
 }
