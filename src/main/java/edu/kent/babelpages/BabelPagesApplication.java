@@ -34,7 +34,7 @@ public class BabelPagesApplication implements CommandLineRunner {
         if(securityProperties.isDevMode()){
             // insert development admin user
             if(usersDAO.findByUsername(securityProperties.getDevAdminUsername()) == null) {
-                usersDAO.createUser(new User(null,
+                usersDAO.save(new User(null,
                         securityProperties.getDevAdminUsername(),
                         passwordEncoder.encode(securityProperties.getDevAdminPassword()),
                         "John",

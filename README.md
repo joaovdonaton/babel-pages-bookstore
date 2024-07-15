@@ -25,6 +25,9 @@ security.dev-admin-password=10203040
   - SQL sripts that start with ```insert_dummy...(.sql)``` can be executed after running the server once (so flyway can setup the tables)
     - These will populate tables with dummy data for testing
 - Refer to "Book Data Generation" section below
+- **AWS Configuration**
+  - This project also uses AWS S3
+  - Configure the AWS credentials and region by using the AWS CLI command `aws configure`
 
 
 ## **Book Data Generation**

@@ -1,0 +1,5 @@
+ALTER TABLE reviews DROP FOREIGN KEY reviews_ibfk_1;
+ALTER TABLE reviews DROP FOREIGN KEY reviews_ibfk_2;
+
+ALTER TABLE reviews ADD FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE;
+ALTER TABLE reviews ADD FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;

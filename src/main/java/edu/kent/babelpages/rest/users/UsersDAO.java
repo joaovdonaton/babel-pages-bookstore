@@ -4,9 +4,11 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.UUID;
+
 @Repository
 public class UsersDAO {
-    private final String SQL_INSERT_USER = "INSERT INTO users (username, password_hash, first_name, last_name, role) VALUES(?,?,?,?,?)";
+    private final String SQL_INSERT_USER = "INSERT INTO users (id, username, password_hash, first_name, last_name, role) VALUES(?, ?,?,?,?,?)";
     private final String SQL_SELECT_USER_BY_USERNAME = "SELECT * FROM users WHERE username = ?";
 
     private final JdbcTemplate jdbcTemplate;
@@ -15,8 +17,12 @@ public class UsersDAO {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public void createUser(User user){
-        jdbcTemplate.update(SQL_INSERT_USER, user.getUsername(), user.getPasswordHash(), user.getFirstName(), user.getLastName(), user.getROLE());
+    public User save(User user){
+        String uuidStr = UUID.randomUUID().toString();
+
+        jdbcTemplate.update(SQL_INSERT_USER, uuidStr, user.getUsername(), user.getPasswordHash(), user.getFirstName(), user.getLastName(), user.getROLE());
+
+        return findByUsername(user.getUsername()); // this is fine because we know usernames are unique
     }
 
     public User findByUsername(String username){
