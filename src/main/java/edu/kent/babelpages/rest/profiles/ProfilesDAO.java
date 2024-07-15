@@ -36,4 +36,8 @@ public class ProfilesDAO {
 
         return findByUserId(profile.getUserId().toString());
     }
+
+    public void update(Profile profile){
+
+    }
 }

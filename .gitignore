@@ -34,3 +34,4 @@ build/
 
 ### my stuff
 /src/main/resources/security.properties
+/src/main/resources/aws.properties

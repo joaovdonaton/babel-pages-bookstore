@@ -21,6 +21,14 @@ security.dev-mode=true
 security.dev-admin-username=administrator
 security.dev-admin-password=10203040
 ```
+- Create ```aws.properties``` under ```src/main/resources```
+  - Set the properties listed below according to your AWS S3 configuration:
+```
+aws.bucket-name=babelpages
+aws.profile-pictures-prefix=profilePictures/
+```
+
+
 - There are additional development SQL scripts under ```src/main/resources/db/scripts```
   - SQL sripts that start with ```insert_dummy...(.sql)``` can be executed after running the server once (so flyway can setup the tables)
     - These will populate tables with dummy data for testing
