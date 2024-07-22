@@ -12,6 +12,8 @@ public class ProfilesDAO {
     private final String SQL_INSERT_EMPTY_PROFILE =
             "INSERT INTO profiles (id, user_id, profile_picture_url, country, bio, occupation) " +
                     "VALUES (?, ?, ?, ?, ?, ?);";
+    private final String SQL_UPDATE_BY_ID =
+            "UPDATE profiles SET profile_picture_url = ?, country = ?, bio = ?, occupation = ? WHERE id = ?";
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -37,7 +39,11 @@ public class ProfilesDAO {
         return findByUserId(profile.getUserId().toString());
     }
 
+    /**
+     * Full update method, will update everything to be the new Profile profile
+     */
     public void update(Profile profile){
-
+        jdbcTemplate.update(SQL_UPDATE_BY_ID, profile.getProfilePictureUrl(),
+                profile.getCountry(), profile.getBio(), profile.getOccupation(), profile.getId().toString());
     }
 }

@@ -12,4 +12,5 @@ import org.springframework.context.annotation.PropertySource;
 public class AWSProperties {
     private String bucketName;
     private String profilePicturesPrefix;
+    private String region;
 }

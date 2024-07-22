@@ -10,6 +10,7 @@ import java.util.UUID;
 public class UsersDAO {
     private final String SQL_INSERT_USER = "INSERT INTO users (id, username, password_hash, first_name, last_name, role) VALUES(?, ?,?,?,?,?)";
     private final String SQL_SELECT_USER_BY_USERNAME = "SELECT * FROM users WHERE username = ?";
+    private final String SQL_SELECT_USER_BY_ID = "SELECT * FROM users WHERE id = ?";
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -28,6 +29,15 @@ public class UsersDAO {
     public User findByUsername(String username){
         try {
             return jdbcTemplate.queryForObject(SQL_SELECT_USER_BY_USERNAME, new UserRowMapper(), username);
+        }
+        catch(EmptyResultDataAccessException e){
+            return null;
+        }
+    }
+
+    public User findById(String id){
+        try {
+            return jdbcTemplate.queryForObject(SQL_SELECT_USER_BY_ID, new UserRowMapper(), id);
         }
         catch(EmptyResultDataAccessException e){
             return null;

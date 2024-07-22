@@ -16,6 +16,9 @@ spring:
     devtools:
         restart:
             enabled: false
+    servlet:
+        multipart:
+            enabled: true
 
 server:
     servlet:

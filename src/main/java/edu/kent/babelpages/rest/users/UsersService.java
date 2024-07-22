@@ -3,9 +3,12 @@ package edu.kent.babelpages.rest.users;
 import edu.kent.babelpages.lib.error.apiExceptions.InvalidCredentialsException;
 import edu.kent.babelpages.lib.error.apiExceptions.ResourceAlreadyExistsException;
 import edu.kent.babelpages.lib.security.JWTService;
+import edu.kent.babelpages.rest.profiles.DTO.ProfileInfoDTO;
+import edu.kent.babelpages.rest.profiles.Profile;
 import edu.kent.babelpages.rest.profiles.ProfilesService;
 import edu.kent.babelpages.rest.users.DTO.UserCreationDTO;
 import edu.kent.babelpages.rest.users.DTO.UserCredentialsDTO;
+import edu.kent.babelpages.rest.users.DTO.UserInfoAndProfileDTO;
 import edu.kent.babelpages.rest.users.DTO.UserInfoDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -61,5 +64,18 @@ public class UsersService {
                 u.getROLE(),
                 u.getCreated_at()
         ));
+    }
+
+    public UserInfoAndProfileDTO getInfoAndProfile(String id){
+        User u = usersDAO.findById(id);
+        Profile p = profilesService.getProfileFromUserId(id);
+
+        return new UserInfoAndProfileDTO(
+                u.getId(),
+                u.getUsername(),
+                u.getROLE(),
+                u.getCreated_at(),
+                new ProfileInfoDTO(p)
+        );
     }
 }

@@ -26,6 +26,7 @@ security.dev-admin-password=10203040
 ```
 aws.bucket-name=babelpages
 aws.profile-pictures-prefix=profilePictures/
+aws.region=us-east-2
 ```
 
 

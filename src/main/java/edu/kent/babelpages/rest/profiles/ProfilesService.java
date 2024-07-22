@@ -1,6 +1,7 @@
 package edu.kent.babelpages.rest.profiles;
 
 import edu.kent.babelpages.lib.aws.AWSProperties;
+import edu.kent.babelpages.lib.aws.AWSUtil;
 import edu.kent.babelpages.rest.profiles.DTO.ProfileUpdateDTO;
 import edu.kent.babelpages.rest.users.DTO.UserInfoDTO;
 import edu.kent.babelpages.rest.users.User;
@@ -10,25 +11,25 @@ import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
-import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 
 import java.io.IOException;
-import java.util.UUID;
 
 @Service
 public class ProfilesService {
     private final ProfilesDAO profilesDAO;
     private final S3Client s3Client;
     private final AWSProperties awsProperties;
+    private final AWSUtil awsUtil;
 
-    public ProfilesService(ProfilesDAO profilesDAO, S3Client s3Client, AWSProperties awsProperties) {
+    public ProfilesService(ProfilesDAO profilesDAO, S3Client s3Client, AWSProperties awsProperties, AWSUtil awsUtil) {
         this.profilesDAO = profilesDAO;
         this.s3Client = s3Client;
         this.awsProperties = awsProperties;
+        this.awsUtil = awsUtil;
     }
 
-    public Profile getProfileFromUserId(UUID id) {
-        return profilesDAO.findByUserId(id.toString());
+    public Profile getProfileFromUserId(String id) {
+        return profilesDAO.findByUserId(id);
     }
 
     /**
@@ -61,5 +62,19 @@ public class ProfilesService {
                 throw new RuntimeException(e);
             }
         }
+
+        Profile oldProfile = profilesDAO.findByUserId(userDetails.getId().toString());
+
+        System.out.println(profileUpdateDTO);
+
+        profilesDAO.update(new Profile(
+                oldProfile.getId(),
+                userDetails.getId(),
+                file != null ? awsUtil.buildS3ObjectUrl(awsProperties.getProfilePicturesPrefix(), userDetails.getId().toString()) : oldProfile.getProfilePictureUrl(),
+                profileUpdateDTO.getCountry() == null ? oldProfile.getCountry() : profileUpdateDTO.getCountry(),
+                profileUpdateDTO.getBio() == null ? oldProfile.getBio() : profileUpdateDTO.getBio(),
+                profileUpdateDTO.getOccupation() == null ? oldProfile.getOccupation() : profileUpdateDTO.getOccupation()
+        ));
+
     }
 }
