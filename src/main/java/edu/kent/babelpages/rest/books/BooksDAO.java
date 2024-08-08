@@ -72,6 +72,7 @@ public class BooksDAO {
             " VALUES (?, ?, ?, ?, ?, ?, ? ,?, ?, ?, ?, ?)";
     private final String SQL_INSERT_BOOK_TAG = "INSERT INTO books_tags (book_id, tag_id) VALUES (:book_id, :tag_id)";
     private final String SQL_DELETE_BY_ID = "DELETE FROM books WHERE id = ?";
+    private final String SQL_SELECT_RANDOM = "SELECT * FROM books ORDER BY RAND() LIMIT 1";
 
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -152,5 +153,9 @@ public class BooksDAO {
         if(n == 0){ // i.e delete failed
             throw new ResourceDoesNotExistException(HttpStatus.NOT_FOUND, "Book with id " + id + " does not exist.");
         }
+    }
+
+    public Book findOneRandom(){
+        return jdbcTemplate.queryForObject(SQL_SELECT_RANDOM, new BookRowMapper());
     }
 }

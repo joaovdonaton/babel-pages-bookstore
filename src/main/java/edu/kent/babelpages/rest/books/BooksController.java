@@ -75,4 +75,13 @@ public class BooksController {
     public void deleteBook(@PathVariable String id){
         booksService.deleteBook(id);
     }
+
+    @GetMapping("/random")
+    @Tag(name = "Books")
+    @Operation(
+            summary = "Return random book."
+    )
+    public BookSearchResultDTO getRandomBook(){
+        return booksService.getRandom();
+    }
 }

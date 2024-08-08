@@ -52,4 +52,8 @@ public class BooksService {
     public void deleteBook(String id){
         booksDAO.deleteBookById(id);
     }
+
+    public BookSearchResultDTO getRandom(){
+        return new BookSearchResultDTO(booksDAO.findOneRandom());
+    }
 }
