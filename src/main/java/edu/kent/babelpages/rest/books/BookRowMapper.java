@@ -21,7 +21,8 @@ public class BookRowMapper implements RowMapper<Book> {
                 rs.getInt("pub_month"),
                 rs.getInt("pub_day"),
                 // authors are in a comma separated VARCHAR column
-               rs.getString("authors")
+               rs.getString("authors"),
+                rs.getBigDecimal("avg_score")
         );
     }
 }

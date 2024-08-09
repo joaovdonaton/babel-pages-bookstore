@@ -11,8 +11,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 public class BooksService {
@@ -55,5 +57,13 @@ public class BooksService {
 
     public BookSearchResultDTO getRandom(){
         return new BookSearchResultDTO(booksDAO.findOneRandom());
+    }
+
+    /**
+     * Calculates and updates the avg_score column for the book.
+     * Should be called whenever we add/remove a review or change a score for a review.
+     */
+    public void computeAndUpdateAverageById(String id){
+        booksDAO.updateAverageScoreByBookId(id);
     }
 }

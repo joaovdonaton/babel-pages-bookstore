@@ -1,5 +1,6 @@
 package edu.kent.babelpages.rest.reviews;
 
+import edu.kent.babelpages.lib.error.apiExceptions.InternalServerException;
 import edu.kent.babelpages.rest.books.BooksService;
 import edu.kent.babelpages.rest.reviewVotes.DTO.VoteCountDTO;
 import edu.kent.babelpages.rest.reviewVotes.ReviewVotesService;
@@ -9,25 +10,34 @@ import edu.kent.babelpages.rest.reviews.DTO.ReviewResponseDTO;
 import edu.kent.babelpages.rest.users.DTO.UserInfoDTO;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
 public class ReviewsService {
     private final ReviewsDAO reviewsDAO;
     private final ReviewVotesService reviewVotesService;
+    private final BooksService booksService;
 
-    public ReviewsService(ReviewsDAO reviewsDAO, ReviewVotesService reviewVotesService) {
+    public ReviewsService(ReviewsDAO reviewsDAO, ReviewVotesService reviewVotesService, BooksService booksService) {
         this.reviewsDAO = reviewsDAO;
         this.reviewVotesService = reviewVotesService;
+        this.booksService = booksService;
     }
 
+    /**
+     * Save review and also update the avg_score column for the books table
+     * TODO: make it so user cannot post more than one review per book
+     */
+    @Transactional
     public void saveReview(ReviewCreateDTO reviewCreateDTO){
         // we set Authentication principal as UserInfoDTO in JWTService during authentication
         // we get currently authenticated user's id here
         var user = (UserInfoDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        reviewsDAO.save(new Review(
+        var review = reviewsDAO.save(new Review(
                 null, // set on creation
                 reviewCreateDTO.getBookId(),
                 user.getId().toString(),
@@ -37,6 +47,10 @@ public class ReviewsService {
                 // set on creation too
                 null
         ));
+
+        if(review == null) throw new InternalServerException("Server error while attempting to save review.");
+
+        booksService.computeAndUpdateAverageById(review.getBookId());
     }
 
     public void saveVote(String reviewId, VoteType voteType){

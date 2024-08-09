@@ -23,6 +23,7 @@ public class BookSearchResultDTO {
     private int pubMonth;
     private int pubDay;
     private Set<String> authors;
+    private BigDecimal avgScore;
 
     public BookSearchResultDTO(Book book) {
         this.id = book.getId();
@@ -33,5 +34,6 @@ public class BookSearchResultDTO {
         this.pubMonth = book.getPubMonth();
         this.pubDay = book.getPubDay();
         this.authors = new HashSet<>(Arrays.asList(book.getAuthors().split(",")));
+        this.avgScore = book.getAvgScore();
     }
 }

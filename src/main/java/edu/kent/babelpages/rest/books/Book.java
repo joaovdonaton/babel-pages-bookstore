@@ -27,6 +27,7 @@ public class Book {
     private Integer pubMonth;
     private Integer pubDay;
     private String authors;
+    private BigDecimal avgScore;
 
     public Book(BookRegisterDTO bookRegisterDTO){
         this.title = bookRegisterDTO.getTitle();

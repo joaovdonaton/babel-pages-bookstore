@@ -73,6 +73,8 @@ public class BooksDAO {
     private final String SQL_INSERT_BOOK_TAG = "INSERT INTO books_tags (book_id, tag_id) VALUES (:book_id, :tag_id)";
     private final String SQL_DELETE_BY_ID = "DELETE FROM books WHERE id = ?";
     private final String SQL_SELECT_RANDOM = "SELECT * FROM books ORDER BY RAND() LIMIT 1";
+    private final String SQL_UPDATE_AVERAGE =
+            "UPDATE books SET avg_score = (SELECT avg(score) FROM reviews WHERE book_id = :id) WHERE id = :id";
 
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -157,5 +159,9 @@ public class BooksDAO {
 
     public Book findOneRandom(){
         return jdbcTemplate.queryForObject(SQL_SELECT_RANDOM, new BookRowMapper());
+    }
+
+    public void updateAverageScoreByBookId(String id){
+        namedParameterJdbcTemplate.update(SQL_UPDATE_AVERAGE, new MapSqlParameterSource("id", id));
     }
 }

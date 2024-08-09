@@ -31,6 +31,7 @@ public class BookDetailsDTO {
     private Set<String> authors;
     private boolean isLowStock;
     private Set<TagResultDTO> tags;
+    private BigDecimal avgScore;
 
     public BookDetailsDTO(Book book, Set<Tag> tags) {
         this.id = book.getId();
@@ -44,6 +45,7 @@ public class BookDetailsDTO {
         this.ISBN = book.getISBN();
         this.language = book.getLanguage();
         this.isLowStock = book.getStockQuantity() <= 10;
+        this.avgScore = book.getAvgScore();
 
         this.tags = tags.stream().map(TagResultDTO::new).collect(Collectors.toSet());
     }

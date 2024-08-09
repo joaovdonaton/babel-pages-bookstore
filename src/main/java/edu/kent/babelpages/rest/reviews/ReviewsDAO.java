@@ -2,7 +2,6 @@ package edu.kent.babelpages.rest.reviews;
 
 import edu.kent.babelpages.rest.reviews.DTO.ReviewResponseDTO;
 import edu.kent.babelpages.rest.users.DTO.UserInfoDTO;
-import edu.kent.babelpages.rest.users.User;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -18,6 +17,8 @@ public class ReviewsDAO {
     // a little different because we want to select columns from reviews and users
     private final String SQL_SELECT_BY_BOOK_ID =
             "SELECT * FROM reviews join users on users.id = reviews.user_id WHERE reviews.book_id = ?";
+    private final String SQL_COMPUTE_AVG_BY_BOOK_ID =
+            "SELECT avg(score) AS average FROM reviews WHERE book_id = ?";
 
     private final JdbcTemplate jdbcTemplate;
 
