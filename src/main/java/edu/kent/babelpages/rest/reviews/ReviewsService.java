@@ -1,6 +1,7 @@
 package edu.kent.babelpages.rest.reviews;
 
 import edu.kent.babelpages.lib.error.apiExceptions.InternalServerException;
+import edu.kent.babelpages.lib.error.apiExceptions.ResourceAlreadyExistsException;
 import edu.kent.babelpages.rest.books.BooksService;
 import edu.kent.babelpages.rest.reviewVotes.DTO.VoteCountDTO;
 import edu.kent.babelpages.rest.reviewVotes.ReviewVotesService;
@@ -8,6 +9,7 @@ import edu.kent.babelpages.rest.reviews.DTO.ReviewCreateDTO;
 import edu.kent.babelpages.rest.reviewVotes.enums.VoteType;
 import edu.kent.babelpages.rest.reviews.DTO.ReviewResponseDTO;
 import edu.kent.babelpages.rest.users.DTO.UserInfoDTO;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,13 +31,18 @@ public class ReviewsService {
 
     /**
      * Save review and also update the avg_score column for the books table
-     * TODO: make it so user cannot post more than one review per book
      */
     @Transactional
     public void saveReview(ReviewCreateDTO reviewCreateDTO){
         // we set Authentication principal as UserInfoDTO in JWTService during authentication
         // we get currently authenticated user's id here
         var user = (UserInfoDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        // check if user has already posted review for this book
+        if(reviewsDAO.findAllByBookId(reviewCreateDTO.getBookId())
+                .stream().anyMatch(b -> b.getUser().getId().equals(user.getId()))){
+            throw new ResourceAlreadyExistsException(HttpStatus.CONFLICT, "User has already posted a review for this book.");
+        }
 
         var review = reviewsDAO.save(new Review(
                 null, // set on creation
