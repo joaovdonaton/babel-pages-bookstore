@@ -25,9 +25,9 @@ public class BookDetailsDTO {
     private String ISBN;
     private String description;
     private String language;
-    private int pubYear;
-    private int pubMonth;
-    private int pubDay;
+    private Integer pubYear;
+    private Integer pubMonth;
+    private Integer pubDay;
     private Set<String> authors;
     private boolean isLowStock;
     private Set<TagResultDTO> tags;

@@ -19,9 +19,9 @@ public class BookSearchResultDTO {
     private String title;
     private BigDecimal price;
     private String coverURL;
-    private int pubYear;
-    private int pubMonth;
-    private int pubDay;
+    private Integer pubYear;
+    private Integer pubMonth;
+    private Integer pubDay;
     private Set<String> authors;
     private BigDecimal avgScore;
 

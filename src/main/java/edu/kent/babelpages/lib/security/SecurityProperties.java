@@ -17,4 +17,5 @@ public class SecurityProperties {
     private boolean devMode;
     private String devAdminUsername;
     private String devAdminPassword;
+    private String corsClientOrigin;
 }

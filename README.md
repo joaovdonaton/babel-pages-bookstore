@@ -20,6 +20,8 @@ security.jwt-header-prefix=Bearer
 security.dev-mode=true
 security.dev-admin-username=administrator
 security.dev-admin-password=10203040
+
+security.cors-client-origin=FRONT_END_CLIENT_ADDRESS
 ```
 - Create ```aws.properties``` under ```src/main/resources```
   - Set the properties listed below according to your AWS S3 configuration:
