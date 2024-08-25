@@ -19,6 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static org.apache.commons.lang3.BooleanUtils.forEach;
+
 @Service
 public class ReviewsService {
     private final ReviewsDAO reviewsDAO;
@@ -89,6 +91,17 @@ public class ReviewsService {
     public List<ReviewResponseFullDTO> search(ReviewOrderByEnum orderBy, AscDescEnum ascDesc, int limit, int page) {
         int offset = limit*page;
 
-        return reviewsDAO.findAllOrderBy(orderBy, ascDesc, limit, offset);
+        var reviews = reviewsDAO.findAllOrderBy(orderBy, ascDesc, limit, offset);
+
+        // todo: remove this repetition
+        reviews.forEach(review -> {
+            VoteCountDTO votes = reviewVotesService.countVotesForReview(review.getId());
+
+            review.setFunnyVotes(votes.getFunnyCount());
+            review.setPoeticVotes(votes.getPoeticCount());
+            review.setUsefulVotes(votes.getUsefulCount());
+        });
+
+        return reviews;
     }
 }
