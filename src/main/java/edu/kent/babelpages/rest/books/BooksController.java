@@ -67,6 +67,8 @@ public class BooksController {
 
     @DeleteMapping("/{id}")
     @Tag(name = "Books")
+    @RolesAllowed("ADMIN")
+    @SecurityRequirement(name = "auth")
     @Operation(
             summary = "Delete book by id."
     )

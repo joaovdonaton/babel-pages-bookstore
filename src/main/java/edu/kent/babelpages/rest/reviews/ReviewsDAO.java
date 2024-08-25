@@ -1,6 +1,10 @@
 package edu.kent.babelpages.rest.reviews;
 
+import edu.kent.babelpages.lib.error.apiExceptions.InternalServerException;
+import edu.kent.babelpages.rest.books.enums.AscDescEnum;
 import edu.kent.babelpages.rest.reviews.DTO.ReviewResponseDTO;
+import edu.kent.babelpages.rest.reviews.DTO.ReviewResponseFullDTO;
+import edu.kent.babelpages.rest.reviews.enums.ReviewOrderByEnum;
 import edu.kent.babelpages.rest.users.DTO.UserInfoDTO;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -19,6 +23,40 @@ public class ReviewsDAO {
             "SELECT * FROM reviews join users on users.id = reviews.user_id WHERE reviews.book_id = ?";
     private final String SQL_COMPUTE_AVG_BY_BOOK_ID =
             "SELECT avg(score) AS average FROM reviews WHERE book_id = ?";
+
+    /**
+     * @param orderByColumn from ReviewOrderByEnum
+     */
+    private static String BUILD_QUERY_SEARCH(ReviewOrderByEnum orderByColumn, AscDescEnum ascDesc, int limit, int offset){
+        StringBuilder sql = new StringBuilder(
+                "SELECT * FROM reviews JOIN books ON books.id = reviews.book_id " +
+                        "JOIN users ON users.id = reviews.user_id ");
+
+        sql.append("ORDER BY ");
+
+        // TODO: implement the rest of these order by options
+        switch(orderByColumn){
+            case DATE:
+                sql.append("reviews.created_at");
+                break;
+            case VOTE_COUNT:
+                break;
+            case MOST_FUNNY:
+                break;
+            case MOST_USEFUL:
+                break;
+            case MOST_POETIC:
+                break;
+            default:
+                throw new InternalServerException("Unkown column for review orderby");
+        }
+
+        sql.append(" ").append(ascDesc.toString()).append(" ");
+
+        sql.append(" LIMIT ").append(limit).append(" OFFSET ").append(offset);
+
+        return sql.toString();
+    }
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -63,5 +101,24 @@ public class ReviewsDAO {
 
             );
         }, bookId);
+    }
+
+    public List<ReviewResponseFullDTO> findAllOrderBy(ReviewOrderByEnum orderByColumn, AscDescEnum ascDesc, int limit, int offset){
+        return jdbcTemplate.query(BUILD_QUERY_SEARCH(orderByColumn, ascDesc, limit, offset), (rs, rn) -> {
+            return new ReviewResponseFullDTO(
+                    rs.getString("reviews.id"),
+                    rs.getString("reviews.title"),
+                    rs.getString("body"),
+                    rs.getInt("score"),
+                    null,
+                    null,
+                    null,
+                    new UserInfoDTO(
+                            UUID.fromString(rs.getString("users.id")),
+                            rs.getString("username"),
+                            null,
+                            rs.getTimestamp("created_at")),
+                    rs.getString("books.title")
+            );});
     }
 }

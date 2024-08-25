@@ -1,5 +1,6 @@
 # Babel Pages 
 - A Spring Boot Back-end REST API for an imaginary bookstore project
+- Client: https://github.com/joaovdonaton/babelpages-front
 
 ## **Details**
 - Manually written SQL queries ONLY, no JPA at all.
@@ -50,3 +51,7 @@ data on actual books from ISBNs
 ## **Important**
 - Changing column names has a *HIGH* chance of breaking the queries in the DAOs
   - Doing so would probably require refactors and attention
+
+- A design decision I made was making the backend return all fields for DTOs. For example: the
+BookSearchResultDTO has fields like pubYear, pubMonth and pubDay which can be null if they are absent. This API
+will return those fields even if they are null.

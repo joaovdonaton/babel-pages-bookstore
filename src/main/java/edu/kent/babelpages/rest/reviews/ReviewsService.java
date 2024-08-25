@@ -3,11 +3,14 @@ package edu.kent.babelpages.rest.reviews;
 import edu.kent.babelpages.lib.error.apiExceptions.InternalServerException;
 import edu.kent.babelpages.lib.error.apiExceptions.ResourceAlreadyExistsException;
 import edu.kent.babelpages.rest.books.BooksService;
+import edu.kent.babelpages.rest.books.enums.AscDescEnum;
 import edu.kent.babelpages.rest.reviewVotes.DTO.VoteCountDTO;
 import edu.kent.babelpages.rest.reviewVotes.ReviewVotesService;
 import edu.kent.babelpages.rest.reviews.DTO.ReviewCreateDTO;
 import edu.kent.babelpages.rest.reviewVotes.enums.VoteType;
 import edu.kent.babelpages.rest.reviews.DTO.ReviewResponseDTO;
+import edu.kent.babelpages.rest.reviews.DTO.ReviewResponseFullDTO;
+import edu.kent.babelpages.rest.reviews.enums.ReviewOrderByEnum;
 import edu.kent.babelpages.rest.users.DTO.UserInfoDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -81,5 +84,11 @@ public class ReviewsService {
         });
 
         return reviewsList;
+    }
+
+    public List<ReviewResponseFullDTO> search(ReviewOrderByEnum orderBy, AscDescEnum ascDesc, int limit, int page) {
+        int offset = limit*page;
+
+        return reviewsDAO.findAllOrderBy(orderBy, ascDesc, limit, offset);
     }
 }

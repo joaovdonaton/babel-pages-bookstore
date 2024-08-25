@@ -17,9 +17,9 @@ public class BookRowMapper implements RowMapper<Book> {
                 rs.getString("cover_url"),
                 rs.getBigDecimal("price"),
                 rs.getInt("stock_quantity"),
-                rs.getInt("pub_year"),
-                rs.getInt("pub_month"),
-                rs.getInt("pub_day"),
+                rs.getInt("pub_year") == 0 ? null : rs.getInt("pub_year"),
+                rs.getInt("pub_month") == 0 ? null : rs.getInt("pub_month"),
+                rs.getInt("pub_day") == 0 ? null : rs.getInt("pub_day"),
                 // authors are in a comma separated VARCHAR column
                rs.getString("authors"),
                 rs.getBigDecimal("avg_score")
