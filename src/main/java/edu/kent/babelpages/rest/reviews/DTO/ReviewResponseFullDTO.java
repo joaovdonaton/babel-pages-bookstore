@@ -23,4 +23,5 @@ public class ReviewResponseFullDTO {
     private Integer poeticVotes;
     private UserInfoDTO user;
     private String bookTitle;
+    private String bookId;
 }

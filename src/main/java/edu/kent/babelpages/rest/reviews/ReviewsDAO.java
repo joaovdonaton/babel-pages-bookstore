@@ -118,7 +118,8 @@ public class ReviewsDAO {
                             rs.getString("username"),
                             null,
                             rs.getTimestamp("created_at")),
-                    rs.getString("books.title")
+                    rs.getString("books.title"),
+                    rs.getString("books.id")
             );});
     }
 }
