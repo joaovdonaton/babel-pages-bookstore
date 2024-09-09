@@ -38,6 +38,7 @@ public class BookDetailsDTO {
         this.title = book.getTitle();
         this.price = book.getPrice();
         this.coverURL = book.getCoverUrl();
+        this.description = book.getDescription();
         this.pubYear = book.getPubYear();
         this.pubMonth = book.getPubMonth();
         this.pubDay = book.getPubDay();
