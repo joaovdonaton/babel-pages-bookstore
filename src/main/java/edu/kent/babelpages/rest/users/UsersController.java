@@ -47,16 +47,25 @@ public class UsersController {
     )
     public UserInfoAndProfileDTO getSelf(){
         var u = (UserInfoDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return service.getInfoAndProfile(u.getId().toString());
+        return service.getInfoAndProfileById(u.getId().toString());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
     @Tag(name = "Users")
     @Operation(
-            summary = "Get details and profile for user."
+            summary = "Get details and profile for user from id."
     )
     public UserInfoAndProfileDTO getDetails(@PathVariable String id){
-        return service.getInfoAndProfile(id);
+        return service.getInfoAndProfileById(id);
+    }
+
+    @GetMapping("/{username}")
+    @Tag(name = "Users")
+    @Operation(
+            summary = "Get details and profile for user from username."
+    )
+    public UserInfoAndProfileDTO getUser(@PathVariable String username){
+        return service.getInfoAndProfileByUsername(username);
     }
 
 }

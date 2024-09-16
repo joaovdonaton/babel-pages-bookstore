@@ -52,7 +52,7 @@ public class ProfilesService {
             // todo: add verification that file height and width is NxN where N is number of pixels
             PutObjectRequest req = PutObjectRequest.builder()
                     .bucket(awsProperties.getBucketName())
-                    .key(awsProperties.getProfilePicturesPrefix() + userDetails.getId().toString())
+                    .key(awsProperties.getProfilePicturesPrefix() + "/" + userDetails.getId().toString())
                     .contentType(file.getContentType())
                     .build();
 
@@ -64,8 +64,6 @@ public class ProfilesService {
         }
 
         Profile oldProfile = profilesDAO.findByUserId(userDetails.getId().toString());
-
-        System.out.println(profileUpdateDTO);
 
         profilesDAO.update(new Profile(
                 oldProfile.getId(),

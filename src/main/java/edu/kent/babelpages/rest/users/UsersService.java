@@ -2,6 +2,7 @@ package edu.kent.babelpages.rest.users;
 
 import edu.kent.babelpages.lib.error.apiExceptions.InvalidCredentialsException;
 import edu.kent.babelpages.lib.error.apiExceptions.ResourceAlreadyExistsException;
+import edu.kent.babelpages.lib.error.apiExceptions.ResourceDoesNotExistException;
 import edu.kent.babelpages.lib.security.JWTService;
 import edu.kent.babelpages.rest.profiles.DTO.ProfileInfoDTO;
 import edu.kent.babelpages.rest.profiles.Profile;
@@ -33,7 +34,7 @@ public class UsersService {
     public UserInfoDTO createUser(UserCreationDTO userCreationDTO){
         // check if user already exists
         User u = usersDAO.findByUsername(userCreationDTO.getUsername());
-        if(u != null) throw new ResourceAlreadyExistsException(HttpStatus.BAD_REQUEST, "Username already exists");
+        if(u != null) throw new ResourceAlreadyExistsException(HttpStatus.CONFLICT, "Username already exists");
 
         // hash password
         userCreationDTO.setPassword(passwordEncoder.encode(userCreationDTO.getPassword()));
@@ -66,9 +67,24 @@ public class UsersService {
         ));
     }
 
-    public UserInfoAndProfileDTO getInfoAndProfile(String id){
+    public UserInfoAndProfileDTO getInfoAndProfileById(String id){
         User u = usersDAO.findById(id);
+        if(u == null) throw new ResourceDoesNotExistException(HttpStatus.NOT_FOUND, "User with id " + id + " does not exist" );
         Profile p = profilesService.getProfileFromUserId(id);
+
+        return new UserInfoAndProfileDTO(
+                u.getId(),
+                u.getUsername(),
+                u.getROLE(),
+                u.getCreated_at(),
+                new ProfileInfoDTO(p)
+        );
+    }
+
+    public UserInfoAndProfileDTO getInfoAndProfileByUsername(String username) {
+        User u = usersDAO.findByUsername(username);
+        if(u == null) throw new ResourceDoesNotExistException(HttpStatus.NOT_FOUND, "User with username " + username + " does not exist" );
+        Profile p = profilesService.getProfileFromUserId(u.getId().toString());
 
         return new UserInfoAndProfileDTO(
                 u.getId(),

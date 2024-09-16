@@ -34,7 +34,7 @@ public class ReviewsController {
             summary = "Post a review to a book as currently authenticated user."
     )
     @ResponseStatus(HttpStatus.CREATED)
-    public void postReview(@Valid ReviewCreateDTO reviewCreateDTO) {
+    public void postReview(@RequestBody @Valid ReviewCreateDTO reviewCreateDTO) {
         reviewsService.saveReview(reviewCreateDTO);
     }
 
