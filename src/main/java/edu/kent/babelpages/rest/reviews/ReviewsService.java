@@ -2,6 +2,7 @@ package edu.kent.babelpages.rest.reviews;
 
 import edu.kent.babelpages.lib.error.apiExceptions.InternalServerException;
 import edu.kent.babelpages.lib.error.apiExceptions.ResourceAlreadyExistsException;
+import edu.kent.babelpages.lib.error.apiExceptions.ResourceDoesNotExistException;
 import edu.kent.babelpages.rest.books.BooksService;
 import edu.kent.babelpages.rest.books.enums.AscDescEnum;
 import edu.kent.babelpages.rest.reviewVotes.DTO.VoteCountDTO;
@@ -12,6 +13,7 @@ import edu.kent.babelpages.rest.reviews.DTO.ReviewResponseDTO;
 import edu.kent.babelpages.rest.reviews.DTO.ReviewResponseFullDTO;
 import edu.kent.babelpages.rest.reviews.enums.ReviewOrderByEnum;
 import edu.kent.babelpages.rest.users.DTO.UserInfoDTO;
+import edu.kent.babelpages.rest.users.UsersService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -26,11 +28,13 @@ public class ReviewsService {
     private final ReviewsDAO reviewsDAO;
     private final ReviewVotesService reviewVotesService;
     private final BooksService booksService;
+    private final UsersService usersService;
 
-    public ReviewsService(ReviewsDAO reviewsDAO, ReviewVotesService reviewVotesService, BooksService booksService) {
+    public ReviewsService(ReviewsDAO reviewsDAO, ReviewVotesService reviewVotesService, BooksService booksService, UsersService usersService) {
         this.reviewsDAO = reviewsDAO;
         this.reviewVotesService = reviewVotesService;
         this.booksService = booksService;
+        this.usersService = usersService;
     }
 
     /**
@@ -88,10 +92,13 @@ public class ReviewsService {
         return reviewsList;
     }
 
-    public List<ReviewResponseFullDTO> search(ReviewOrderByEnum orderBy, AscDescEnum ascDesc, int limit, int page) {
+    public List<ReviewResponseFullDTO> search(ReviewOrderByEnum orderBy, String filterByUsername, AscDescEnum ascDesc, int limit, int page) {
         int offset = limit*page;
 
-        var reviews = reviewsDAO.findAllOrderBy(orderBy, ascDesc, limit, offset);
+        if(filterByUsername != null && !usersService.existsByUsername(filterByUsername)) throw new ResourceDoesNotExistException(HttpStatus.NOT_FOUND,
+                "User with username " + filterByUsername + "does not exist");
+
+        var reviews = reviewsDAO.findAllOrderBy(orderBy, filterByUsername, ascDesc, limit, offset);
 
         // todo: remove this repetition
         reviews.forEach(review -> {

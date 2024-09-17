@@ -7,6 +7,8 @@ import edu.kent.babelpages.rest.reviews.DTO.ReviewResponseFullDTO;
 import edu.kent.babelpages.rest.reviews.enums.ReviewOrderByEnum;
 import edu.kent.babelpages.rest.users.DTO.UserInfoDTO;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -27,12 +29,16 @@ public class ReviewsDAO {
     /**
      * @param orderByColumn from ReviewOrderByEnum
      */
-    private static String BUILD_QUERY_SEARCH(ReviewOrderByEnum orderByColumn, AscDescEnum ascDesc, int limit, int offset){
+    private static String BUILD_QUERY_SEARCH(ReviewOrderByEnum orderByColumn, boolean usernameExists, AscDescEnum ascDesc, int limit, int offset){
         StringBuilder sql = new StringBuilder(
                 "SELECT * FROM reviews JOIN books ON books.id = reviews.book_id " +
                         "JOIN users ON users.id = reviews.user_id ");
 
-        sql.append("ORDER BY ");
+        if(usernameExists){
+            sql.append(" WHERE users.username = :username");
+        }
+
+        sql.append(" ORDER BY ");
 
         // TODO: implement the rest of these order by options
         switch(orderByColumn){
@@ -59,9 +65,11 @@ public class ReviewsDAO {
     }
 
     private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    public ReviewsDAO(JdbcTemplate jdbcTemplate) {
+    public ReviewsDAO(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
     public Review findById(String id) {
@@ -103,8 +111,11 @@ public class ReviewsDAO {
         }, bookId);
     }
 
-    public List<ReviewResponseFullDTO> findAllOrderBy(ReviewOrderByEnum orderByColumn, AscDescEnum ascDesc, int limit, int offset){
-        return jdbcTemplate.query(BUILD_QUERY_SEARCH(orderByColumn, ascDesc, limit, offset), (rs, rn) -> {
+    public List<ReviewResponseFullDTO> findAllOrderBy(ReviewOrderByEnum orderByColumn, String filterByUsername,
+                                                      AscDescEnum ascDesc, int limit, int offset){
+        return namedParameterJdbcTemplate.query(BUILD_QUERY_SEARCH(orderByColumn, filterByUsername != null, ascDesc, limit, offset),
+                new MapSqlParameterSource().addValue("username", filterByUsername),
+                (rs, rn) -> {
             return new ReviewResponseFullDTO(
                     rs.getString("reviews.id"),
                     rs.getString("reviews.title"),

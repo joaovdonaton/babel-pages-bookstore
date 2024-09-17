@@ -65,9 +65,10 @@ public class ReviewsController {
             summary = "Parameter based search"
     )
     public List<ReviewResponseFullDTO> search(@RequestParam(defaultValue = "DATE") ReviewOrderByEnum orderBy,
+                                              @RequestParam(required = false) String filterByUsername,
                                               @RequestParam(defaultValue = "10", required = false) @Min(1) int limit,
                                               @RequestParam(defaultValue = "0", required = false) @Min(0) int page,
                                               @RequestParam(defaultValue = "ASC", required = false) AscDescEnum ascDesc){
-        return reviewsService.search(orderBy, ascDesc, limit, page);
+        return reviewsService.search(orderBy, filterByUsername, ascDesc, limit, page);
     }
 }

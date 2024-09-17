@@ -94,4 +94,9 @@ public class UsersService {
                 new ProfileInfoDTO(p)
         );
     }
+
+    public boolean existsByUsername(String username){
+        User u = usersDAO.findByUsername(username);
+        return u != null;
+    }
 }
